@@ -1,0 +1,33 @@
+This study adopts a Design Science Research (DSR) methodology, which is appropriate for research whose primary contribution is an innovative software artefact. DSR is well-established in information systems and software engineering as the paradigm concerned with extending organizational capabilities through the design and evaluation of artefacts intended to solve practical problems (Hevner et al., 2004). Unlike behavioral science, which seeks to explain or predict phenomena, design science generates knowledge through the design and evaluation of artefacts (Hevner et al., 2004).
+
+The DSR process follows Wieringa’s (2014) design cycle, which iterates over two activities: designing an artefact that improves something for stakeholders and subsequently empirically investigating the performance of that artefact in its context. This “validation in context” principle is central to the methodology: the artefact is not merely built but must be shown to address the identified problem within its operational environment (Wieringa, 2014).
+
+Consistent with departmental guidelines, the system architecture is fully specified before implementation begins, ensuring traceability between design decisions and identified requirements.
+
+The Nigeria Road Management System (NRMS) employs a four-tier architecture that separates concerns across presentation, business logic, data persistence, and notification services.
+
+This separation yields three design properties: security (role-based access enforced server-side), maintainability (independent tier modification), and scalability (horizontal scaling without client redesign).
+
+Client Tier. The Citizen Portal provides a responsive web and mobile interface for reporting road defects (potholes, erosion) and traffic violations (one-way driving, illegal parking) with photographic evidence and GPS coordinates. The Contractor Portal enables registered contractors to view assigned projects, upload timestamped progress photographs for completed milestones, and request inspection. The Officials Dashboard displays monitored road counts, critical road spots, active projects, and overdue inspection counts.
+
+Logic Tier. The User Management Module implements registration, secure authentication, password encryption, and role-based access control across four roles: citizen, contractor, inspector, and administrator. The Report Management Module receives citizen submissions, performs geospatial duplicate detection using a 100-metre radius threshold, and assigns urgency priority. The Contractor Progress Module tracks project stages, computes percentage completion, and stores progress photographs for verification. The Inspection Alert Engine executes daily database queries to flag road sections or projects whose last inspection exceeds 30 days. The Map Analytics Service processes GPS data to spatially cluster reported defects and formats data for dashboard rendering.
+
+Data Tier. PostgreSQL with PostGIS provides spatial data storage for road records and GPS coordinates. Cloudinary/S3 handles photograph storage. Redis provides caching for dashboard performance.
+
+Output Tier. Notification Services dispatch SMS and email alerts for overdue inspections. Map Rendering uses Leaflet with OpenStreetMap tiles. Report Generation produces PDF/CSV exports for management.
+
+The operational interactions across actors, application logic, and persistence layers are defined by four standardized data flows (F1 through F4).
+
+Technology selection was guided by three criteria: reliability, open-source availability, and deployment simplicity.
+
+Each architectural decision traces to a documented gap in the literature. The 100-metre duplicate detection rule addresses the data-quality inconsistency identified by Odinfono and Olawole (2024). The automated 30-day inspection alert addresses irregular manual inspection practices. The contractor photo-verification workflow addresses the absence of public accountability in payment processes. This traceability ensures the artefact responds directly to documented deficiencies rather than representing a purely technical exercise.
+
+Following DSR principles (Hevner et al., 2004; Wieringa, 2014), the artefact will be evaluated through four complementary methods:
+
+Functional validation: Testing each module against specified requirements (duplicate detection accuracy, alert trigger reliability).
+
+Usability evaluation: Task-based testing with representative citizens, contractors, and officials.
+
+Performance benchmarking: API response times, photo upload throughput, and map rendering latency under concurrent load.
+
+Expert review: Structured walkthroughs with road engineers and FRSC officials to assess operational fit.
